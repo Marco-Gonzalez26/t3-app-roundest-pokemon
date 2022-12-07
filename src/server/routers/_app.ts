@@ -1,9 +1,7 @@
 import { z } from 'zod'
 import { procedure, router } from '../trpc'
 
-
 import { PokemonClient } from 'pokenode-ts'
-
 
 export const appRouter = router({
   getPokemonById: procedure
@@ -12,10 +10,10 @@ export const appRouter = router({
         id: z.number()
       })
     )
-    .query( async ({ input }) => {
+    .query(async ({ input }) => {
       const api = new PokemonClient()
-      const pokemon = api.getPokemonById(input.id)
-      return pokemon
+      const pokemon = await api.getPokemonById(input.id)
+      return { name: pokemon.name, sprites: pokemon.sprites }
     })
 })
 // export type definition of API

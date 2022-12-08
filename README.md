@@ -14,3 +14,7 @@ npm run dev
 - [ ] Create the results page with counting/sorting
 - [ ] Use next/image to handle image caching and better rendering
 - [ ] Maybe move images to bulbapedia
+
+## Idea of Theo - ping.gg
+
+[Video of Theo](https://www.youtube.com/watch?v=PKy2lYEnhgs)

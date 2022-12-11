@@ -77,7 +77,7 @@ const PokemonListing: React.FC<{
   return (
     <div className='w-64 h-64 flex flex-col capitalize items-center transition-all'>
       <Image
-        src={pokemon?.sprites.front_default!}
+        src={pokemon?.spriteUrl}
         alt={pokemon?.name}
         className='w-64 h-64'
         width={256}

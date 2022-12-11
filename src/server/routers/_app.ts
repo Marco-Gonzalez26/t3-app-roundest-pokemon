@@ -1,7 +1,7 @@
+import { TRPCError } from '@trpc/server'
 import { z } from 'zod'
 import { procedure, router } from '../trpc'
 
-import { PokemonClient } from 'pokenode-ts'
 import { prisma } from '../utils/prisma'
 export const appRouter = router({
   getPokemonById: procedure
@@ -11,9 +11,15 @@ export const appRouter = router({
       })
     )
     .query(async ({ input }) => {
-      const api = new PokemonClient()
-      const pokemon = await api.getPokemonById(input.id)
-      return { name: pokemon.name, sprites: pokemon.sprites }
+      const pokemon = await prisma.pokemon.findFirst({
+        where: { id: input.id }
+      })
+      if (!pokemon)
+        throw new TRPCError({
+          message: 'Pokemon doesnt exists',
+          code: 'NOT_FOUND'
+        })
+      return pokemon
     }),
   castVote: procedure
     .input(
@@ -23,9 +29,10 @@ export const appRouter = router({
       })
     )
     .mutation(async ({ input }) => {
-      const voteInDb = await prisma.vote.create({
+      const voteInDb = await prisma.vote.createMany({
         data: {
-          ...input
+          votedForId: input.votedFor,
+          votedAgainstId: input.votedAgainst
         }
       })
       return { success: true, vote: voteInDb }

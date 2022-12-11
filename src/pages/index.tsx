@@ -21,15 +21,14 @@ export default function Home() {
   const voteForRoundest = (selected: number) => {
     //todo: fire mutation to persist changes
     if (selected === first) {
-      voteMutation.mutate({votedFor: first, votedAgainst: second})
-    }else {
-      voteMutation.mutate({votedFor: second, votedAgainst: first})
-
+      voteMutation.mutate({ votedFor: first, votedAgainst: second })
+    } else {
+      voteMutation.mutate({ votedFor: second, votedAgainst: first })
     }
     updateIds(getOptionsForVote())
   }
   return (
-    <div className='h-screen w-screen flex flex-col justify-center items-center '>
+    <div className='h-screen w-screen flex flex-col justify-center items-center relative'>
       <Head>
         <title>Who's the roundest pokemon?</title>
       </Head>
@@ -53,6 +52,19 @@ export default function Home() {
             </>
           )}
       </div>
+      <footer className='absolute bottom-0 w-full  p-8 flex items-center justify-center gap-5 text-xl'>
+        <a
+          href='https://github.com/Marco-Gonzalez26'
+          className='hover:text-gray-400 transition-all'>
+          Github
+        </a>
+        <a href='' className='hover:text-gray-400 transition-all '>
+          Original Idea of Theo-pin.gg
+        </a>
+        <a href='https://pokeapi.co/' className='hover:text-gray-400 transition-all'>
+          PokeAPI
+        </a>
+      </footer>
     </div>
   )
 }
@@ -64,7 +76,14 @@ const PokemonListing: React.FC<{
 }> = ({ pokemon, vote }) => {
   return (
     <div className='w-64 h-64 flex flex-col capitalize items-center transition-all'>
-      <img src={pokemon?.sprites.front_default!} className='w-64 h-64 ' />
+      <Image
+        src={pokemon?.sprites.front_default!}
+        alt={pokemon?.name}
+        className='w-64 h-64'
+        width={256}
+        height={256}
+        loading='lazy'
+      />
       <div className='text-xl text-center mt-[-2rem]'>{pokemon?.name}</div>
       <button className={btn} onClick={vote}>
         Rounder

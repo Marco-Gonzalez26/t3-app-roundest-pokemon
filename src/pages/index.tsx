@@ -53,12 +53,7 @@ export default function Home() {
           )}
       </div>
       <footer className='absolute bottom-0 w-full  p-8 flex items-center justify-center gap-5 text-xl'>
-        <a
-          href='https://github.com/Marco-Gonzalez26'
-          className='hover:text-gray-400 transition-all'>
-          Github
-        </a>
-        <a href='' className='hover:text-gray-400 transition-all '>
+        <a href='https://github.com/t3dotgg/roundest-mon' className='hover:text-gray-400 transition-all '>
           Original Idea of Theo-pin.gg
         </a>
         <a href='https://pokeapi.co/' className='hover:text-gray-400 transition-all'>

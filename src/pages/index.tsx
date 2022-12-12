@@ -5,6 +5,8 @@ import React, { useEffect, useState } from 'react'
 import { getOptionsForVote } from '../utils/getRandomPokemon'
 import { trpc } from '../utils/trpc'
 import { PokemonOutput } from './api/trpc/[trpc]'
+import Loader from '../../public/tail-spin.svg'
+import Link from 'next/link'
 
 const btn =
   'items-center px-2.5 py-1.5 border border border-gray-300 shadow-sm text-sm font-medium rounded text-gray-700 bg-white hover-bg-gray-50 focus:outline-none focus:ring-offset-2 focus:ring-indigo-800'
@@ -27,38 +29,56 @@ export default function Home() {
     }
     updateIds(getOptionsForVote())
   }
+
+  const dataLoaded =
+    firstPokemon.data &&
+    !firstPokemon.isLoading &&
+    secondPokemon.data &&
+    !secondPokemon.isLoading
+
   return (
     <div className='h-screen w-screen flex flex-col justify-center items-center relative'>
       <Head>
         <title>Who's the roundest pokemon?</title>
       </Head>
-      <div className=' text-2xl text-center'>Which Pokemon is rounder?</div>
+      <div className=' text-4xl text-center font-bold'>Which Pokemon is rounder?</div>
       <div className='p-2' />
-      <div className=' border rounded p-10 flex justify-between max-w-2xl items-center '>
-        {!firstPokemon.isLoading &&
-          firstPokemon.data &&
-          !secondPokemon.isLoading &&
-          secondPokemon.data && (
-            <>
-              <PokemonListing
-                pokemon={firstPokemon.data!}
-                vote={() => voteForRoundest(first)}
-              />
-              <div className='p-8'>VS</div>
-              <PokemonListing
-                pokemon={secondPokemon.data!}
-                vote={() => voteForRoundest(second)}
-              />
-            </>
-          )}
+      <div className=' border rounded p-10 flex justify-around  w-full max-w-2xl items-center h-full max-h-96'>
+        {dataLoaded ? (
+          <PokemonListing
+            pokemon={firstPokemon.data!}
+            vote={() => voteForRoundest(first)}
+          />
+        ) : (
+          <Image src={Loader} alt='Loading...' width={100} height={100} />
+        )}
+
+        <div className='p-8'>VS</div>
+
+        {dataLoaded ? (
+          <PokemonListing
+            pokemon={secondPokemon.data!}
+            vote={() => voteForRoundest(second)}
+          />
+        ) : (
+          <Image src={Loader} alt='Loading...' width={100} height={100} />
+        )}
+
+        {!dataLoaded && <></>}
       </div>
       <footer className='absolute bottom-0 w-full  p-8 flex items-center justify-center gap-5 text-xl'>
-        <a href='https://github.com/t3dotgg/roundest-mon' className='hover:text-gray-400 transition-all '>
+        <a
+          href='https://github.com/t3dotgg/roundest-mon'
+          className='hover:text-gray-400 transition-all '>
           Original Idea of Theo-pin.gg
         </a>
-        <a href='https://pokeapi.co/' className='hover:text-gray-400 transition-all'>
+        |
+        <a
+          href='https://pokeapi.co/'
+          className='hover:text-gray-400 transition-all'>
           PokeAPI
         </a>
+        |<Link href='/results'>Results</Link>
       </footer>
     </div>
   )

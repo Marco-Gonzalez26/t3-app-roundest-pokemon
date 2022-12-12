@@ -3,18 +3,28 @@ import type { GetServerSideProps } from 'next'
 import { prisma } from '../server/utils/prisma'
 import { AsyncReturnType } from '../server/utils/ts-bs'
 import { getRandomPokemon } from '../utils/getRandomPokemon'
+import Link from 'next/link'
+import Head from 'next/head'
 
 const ResultsPage: React.FC<{
   pokemon: PokemonQueryListing
 }> = (props) => {
   return (
     <div className='flex flex-col justify-center items-center px-12 '>
+      <Head>
+        <title>Results</title>
+      </Head>
       <h2 className='my-5 font-bold text-4xl'>Results</h2>
-      {props.pokemon.map((currentPokemon) => {
-        return (
-          <PokemonListing pokemon={currentPokemon} key={currentPokemon.id} />
-        )
-      })}
+      <Link href='/' className='text-lg hover:text-gray-300 my-5'>
+        Home
+      </Link>
+      {props.pokemon
+        .sort((a, b) => generateCountPercent(b) - generateCountPercent(a))
+        .map((currentPokemon) => {
+          return (
+            <PokemonListing pokemon={currentPokemon} key={currentPokemon.id} />
+          )
+        })}
     </div>
   )
 }
@@ -41,7 +51,7 @@ const generateCountPercent = (pokemon: PokemonQueryListing[number]) => {
     return 0
   }
 
-  return Math.round((VoteFor / (VoteFor + VoteAgainst)) * 100)
+  return (VoteFor / (VoteFor + VoteAgainst)) * 100
 }
 
 const PokemonListing: React.FC<{ pokemon: PokemonQueryListing[number] }> = ({
@@ -58,7 +68,9 @@ const PokemonListing: React.FC<{ pokemon: PokemonQueryListing[number] }> = ({
         />
         <div className='capitalize text-xl font-bold'>{pokemon.name}</div>
       </div>
-      <div className='pr-5'>{generateCountPercent(pokemon) + '%'}</div>
+      <div className='pr-5'>
+        {generateCountPercent(pokemon).toFixed(2) + '%'}
+      </div>
     </div>
   )
 }
@@ -67,5 +79,6 @@ export default ResultsPage
 
 export const getStaticProps: GetServerSideProps = async () => {
   const pokemonOrdered = await getPokemonInOrder()
+  pokemonOrdered.length = 10
   return { props: { pokemon: pokemonOrdered }, revalidate: 60 }
 }
